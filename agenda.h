@@ -20,16 +20,16 @@ struct Color {
 };
 
 struct HorizontalLine{
-    int x_left;
-    int x_right;
-    int y;
+    GLfloat x_left;
+    GLfloat x_right;
+    GLfloat y;
 };
 
 class agenda{
     public:
-        HorizontalLine imgBndryLine;
+        HorizontalLine line;
         Vertical_Direction direction;
 
-    agenda(HorizontalLine line, Vertical_Direction direction):imgBndryLine(line),direction(direction){};
+    agenda(HorizontalLine line, Vertical_Direction direction):line(line),direction(direction){};
 };
 

@@ -1,0 +1,1 @@
+g++ main2.cpp shade.cpp pngImage.cpp lodepng.cpp -lglut -lGL -lGLU -lpng

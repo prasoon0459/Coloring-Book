@@ -48,27 +48,38 @@ void setPixelColor(Point p, Color color) {
     glFlush();
 }
 
+bool onAgenda(Point p){
+    for(agenda a: agendaList){
+        if(p.y==a.line.y && p.x<a.line.x_right && p.x>a.line.x_left){
+            return true;
+        }
+    }
+    return false;
+}
+
 bool adjPoints_boundary(HorizontalLine line, Color color, Point * pt, Vertical_Direction dir){
 
-    //int y=dir==UP?line.y+1:line.y-1;
-    //UPPER LINE
-    //the color we got frm
-
-    bool BNDRY_REACHED=false;
-    int y=line.y+1;
-
+    int y=dir==UP?line.y+1:line.y-1;
     for(int x=line.x_left+1; x<line.x_right; x++){
-
-        //check for both upper and lower points if they are colored
-
         Point p=Point{(GLfloat) x,(GLfloat) y};
         if((getPixelColor(p)==color)){
-            pt->x=p.x;
-            pt->y=p.y;
-            BNDRY_REACHED=true;
+            if(!onAgenda(p)){
+                pt->x=p.x;
+                pt->y=p.y;
+                return false;
+            }   
         }
     }
     return true;
+}
+
+void drawLine(HorizontalLine line,Color color){
+    glColor3f(color.r,color.g,color.b);
+    glBegin(GL_LINES);
+    glVertex2i(line.x_left+1, line.y);
+    glVertex2i(line.x_right, line.y);
+    glEnd();
+    glFlush();
 }
 
 HorizontalLine shadeHorizontally(Point sp,Color shadingColor){
@@ -80,29 +91,84 @@ HorizontalLine shadeHorizontally(Point sp,Color shadingColor){
     cp.y=sp.y;
     line.y=sp.y;
     while ((getPixelColor(cp)==interiorColor)){
-        setPixelColor(cp,shadingColor);
+        //setPixelColor(cp,shadingColor);
         cp.x--;
     }
     line.x_left=cp.x;
     cp.x=sp.x;
     while ((getPixelColor(cp)==interiorColor)){
-        setPixelColor(cp,shadingColor);
+        //setPixelColor(cp,shadingColor);
         cp.x++;
     }
     line.x_right=cp.x;
-    return line;
+    drawLine(line,shadingColor);
+    cout<<"shaded line "<<line.x_left+1<<' '<<line.x_right-1<<' '<<line.y<<endl;
+    return line;// line include one bndry pt in both dirs
+}
+
+void lookforTurns(HorizontalLine line,Color intColor, Vertical_Direction dir){
+    //look for s-turns y=y+1
+    cout << "look for s turns "<<line.x_left<<' '<<line.x_right<<' '<<line.y<<' '<<dir<<endl<<endl;
+    GLfloat y=line.y+1;
+    bool LINE_INPROGRESS=false;
+    HorizontalLine imgBndryLine;
+    imgBndryLine.y=y;
+    GLfloat x=line.x_left;
+    while(x<=line.x_right){
+        cout<<"checking for x = "<<x<<" y = "<<y<<endl;
+        if(getPixelColor({x,y})==intColor&&!LINE_INPROGRESS){
+
+            cout<<"came in if "<<"x "<<x<<" y "<<y<<' '<< getPixelColor({x,y}).colorString()<<' '<<intColor.colorString() <<endl;
+            imgBndryLine.x_left=x;
+            LINE_INPROGRESS=true;
+            while((getPixelColor({x,y})==intColor)){
+                x++;
+            }
+            imgBndryLine.x_right=x-1;
+            LINE_INPROGRESS=false;
+            cout << "agenda added "<<imgBndryLine.x_left<<' '<<imgBndryLine.x_right<<' '<<imgBndryLine.y<<' '<<dir<<endl<<endl;
+            agendaList.push_back(agenda{imgBndryLine,dir});
+        }
+        else x++;
+    }
+
+    //look for u turns
+
+
+
 }
 
 void shade_vertically( Vertical_Direction dir, Point starting_point, Color shadingColor){
-
+    cout<<"shading ver from "<<starting_point.x<<' '<<starting_point.y<<endl;
     Color origin_color=getPixelColor(starting_point);
     Point st_point=starting_point;
     HorizontalLine line;
     Point* next_sp=&st_point;
-
+    HorizontalLine prvsLine;
+    int c=0;
     do{
         line=shadeHorizontally(Point{next_sp->x,next_sp->y},shadingColor);
+        if(c)lookforTurns(prvsLine,origin_color,dir);
+        prvsLine=line;
+        c++;
     }while(!adjPoints_boundary(line, origin_color,next_sp,dir));
+
+}
+
+void shade(Point p, Color shadingColor){
+
+    Vertical_Direction currentDir=UP;
+
+    shade_vertically(UP,p,shadingColor);
+    shade_vertically(DOWN,{p.x,p.y-1},shadingColor);
+
+    while(!agendaList.empty()){
+        int length=agendaList.size();
+        agenda a=agendaList.back();
+        agendaList.pop_back();
+        shade_vertically(currentDir,{a.line.x_left,a.line.y},shadingColor);
+
+    }
 
 }
 

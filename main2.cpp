@@ -67,10 +67,11 @@ void onMouseClick(int button, int state, int x, int y){
         Point p=Point{(GLfloat) x,(GLfloat)(height-y)};
         if(p.x>width-120&&p.x<width-20&&p.y>height-580&&p.y<height-80){
             shadingColor=getPixelColor(p);
+            cout<<"color chosen "<<shadingColor.colorString()<<endl;
         }
         else if(p.x<width-140||p.y<height-600){
-            shade_vertically(UP,p,shadingColor);
-            shade_vertically(DOWN,{p.x,p.y-1},shadingColor);
+            cout<<"shading started "<<p.x<<' '<<p.y<<endl;
+            shade(p,shadingColor);
         }
         return;
     }
@@ -79,12 +80,13 @@ void onMouseClick(int button, int state, int x, int y){
 int main(int argc, char** argv){
 
     string str ;
-    cout<<"Please ener path to the PNG file :"<<endl;
-    cin>>str;
-    char * ptr=new char[str.length()+1];
-    strcpy(ptr,str.c_str());
+    //cout<<"Please ener path to the PNG file :"<<endl;
+    //cin>>str;
+    //char * ptr=new char[str.length()+1];
+    // char * ptr="pngs/heart.png";
+    // strcpy(ptr,str.c_str());
     
-    image.loadImage(ptr);
+    image.loadImage("pngs/logo.png");
     imgHt=image.getHeight();
     imgWd=image.getWidth();
 

@@ -9,3 +9,4 @@ void shade_vertically( Vertical_Direction dir, Point starting_point,Color shadin
 void makeColorPalette(GLdouble width,GLdouble height);
 void draw_Polygon(Point p,int height, int width, Color color);
 void draw_FilledPolygon(Point p,Color color);
+void shade(Point p, Color shadingColor);
