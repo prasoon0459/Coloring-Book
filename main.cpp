@@ -64,6 +64,10 @@ void onMouseClick(int button, int state, int x, int y){
             cout<<"color chosen "<<shadingColor.colorString()<<endl;
         }
         else if(p.x<width-140||p.y<height-600){
+            if(shadingColor==getPixelColor(p)){
+                cout<<"done same color"<<endl;
+                return;
+            }
             cout<<"shading started "<<p.x<<' '<<p.y<<endl;
             shade(p,shadingColor);
             cout<<"done"<<endl;
@@ -79,7 +83,6 @@ int main(int argc, char** argv){
     cin>>str;
     char * ptr=new char[str.length()+1];
     strcpy(ptr,str.c_str());
-    
     image.loadImage(ptr);
     imgHt=image.getHeight();
     imgWd=image.getWidth();

@@ -31,7 +31,7 @@ vector<Color> colors1{ RED1,PINK1,PURPLE1,DEEP_PURPLE1,INDIGO1,
 vector<Color> colors2{LIGHT_GREEN1,LIME1,YELLOW1,AMBER1,
             ORANGE1,DEEP_ORANGE1,BROWN1,GREY1,WHITE1,BLACK1};
 
-
+vector<agenda> *agenda_cDir=new vector <agenda>();
 
 Color getPixelColor(Point p) {
     Color color;
@@ -175,7 +175,7 @@ void shade_vertically( Vertical_Direction dir, Point starting_point, Color shadi
 void shade(Point p, Color shadingColor){
 	
     Color intColor=getPixelColor(p);
-    
+    Vertical_Direction cDir=UP;
     HorizontalLine aline= findBndry(p,intColor);
     agendaListUP->push_back({aline,UP,intColor});
     
@@ -183,17 +183,30 @@ void shade(Point p, Color shadingColor){
     agendaListDOWN->push_back({bline,DOWN,intColor});
     // shade_vertically(UP,p,shadingColor,intColor);
     // shade_vertically(DOWN,{p.x,p.y-1},shadingColor,intColor);
+    agenda_cDir=agendaListUP;
+    while(!(agendaListUP->empty()&&agendaListDOWN->empty())){
+        
+        // cout<<    "     agendaUP"<<endl;
+        // for(agenda a: *agendaListUP){
+        //     cout<<"         "<<a.direction<<' '<<a.line.x_left<<' '<<a.line.x_right<<' '<<a.line.y<<endl;
+        // }
+        // cout<<    "     agendaDOWN"<<endl;
+        // for(agenda a: *agendaListDOWN){
+        //     cout<<"         "<<a.direction<<' '<<a.line.x_left<<' '<<a.line.x_right<<' '<<a.line.y<<endl;
+        // }
+        // cout<<endl;
 
-    while(!(agendaListUP->empty())){
-        agenda a=agendaListUP->back();
-        agendaListUP->pop_back();
-        shade_vertically(UP,{a.line.x_left,a.line.y},shadingColor,a.originColor);
+        if(agenda_cDir->empty()) cDir=cDir==UP?DOWN:UP;
+        agenda_cDir=cDir==UP?agendaListUP:agendaListDOWN;
+        agenda a=agenda_cDir->back();
+        agenda_cDir->pop_back();
+        shade_vertically(cDir,{a.line.x_left,a.line.y},shadingColor,a.originColor);
     }
-    while(!(agendaListDOWN->empty())){
-        agenda a=agendaListDOWN->back();
-        agendaListDOWN->pop_back();
-        shade_vertically(DOWN,{a.line.x_left,a.line.y},shadingColor,a.originColor);
-    }
+    // while(!(agendaListDOWN->empty())){
+    //     agenda a=agendaListDOWN->back();
+    //     agendaListDOWN->pop_back();
+    //     shade_vertically(DOWN,{a.line.x_left,a.line.y},shadingColor,a.originColor);
+    // }
 }
 
 void printTitle(string str, Color color, GLdouble width,GLdouble height){
