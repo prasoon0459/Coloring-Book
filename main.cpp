@@ -1,14 +1,12 @@
 #include "shade.h"
 #include "pngImage.h"
 #include <string.h>
-// #include <algorithm>
 
 bool flag=false;
-GLuint texture[0];
 PngImage image;
 Color shadingColor=Color{1,1,1};
 
-GLdouble width=800,height=800;
+GLdouble width=1000,height=1000;
 GLdouble imgHt, imgWd;
 
 void init() {
@@ -18,7 +16,7 @@ void init() {
     glOrtho(0,width, 0, height, -1.0, 1.0);
 }
 
-void resize(int newheight, int newwidth) {
+/*void resize(int newheight, int newwidth) {
 
     width=newwidth;
     height=newheight;
@@ -28,8 +26,7 @@ void resize(int newheight, int newwidth) {
     // glMatrixMode(GL_PROJECTION);
     // glLoadIdentity();
     // glOrtho(0,newwidth, 0, newheight, -1.0, 1.0);
-
-}
+}*/
 
 void makeDrawing(){
 
@@ -44,16 +41,13 @@ void makeDrawing(){
         }
     }
     glEnd();
-
 }
 
 void display(void) {
 
-    // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT);
     makeColorPalette(width, height);
     makeDrawing();
-
     glutSwapBuffers();
     glFlush();
 
@@ -72,6 +66,7 @@ void onMouseClick(int button, int state, int x, int y){
         else if(p.x<width-140||p.y<height-600){
             cout<<"shading started "<<p.x<<' '<<p.y<<endl;
             shade(p,shadingColor);
+            cout<<"done"<<endl;
         }
         return;
     }
@@ -80,13 +75,12 @@ void onMouseClick(int button, int state, int x, int y){
 int main(int argc, char** argv){
 
     string str ;
-    //cout<<"Please ener path to the PNG file :"<<endl;
-    //cin>>str;
-    //char * ptr=new char[str.length()+1];
-    // char * ptr="pngs/heart.png";
-    // strcpy(ptr,str.c_str());
+    cout<<"Please ener path to the PNG file :"<<endl;
+    cin>>str;
+    char * ptr=new char[str.length()+1];
+    strcpy(ptr,str.c_str());
     
-    image.loadImage("pngs/logo.png");
+    image.loadImage(ptr);
     imgHt=image.getHeight();
     imgWd=image.getWidth();
 

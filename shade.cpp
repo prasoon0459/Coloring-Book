@@ -22,13 +22,16 @@ Color GREY1=        Color {0.61f,0.61f,0.61f};
 Color WHITE1=       Color {1.0f,1.0f,1.0f};
 Color BLACK1=       Color {0.0f,0.0f,0.0f};
 
-vector <agenda> agendaList;
+vector <agenda> * agendaListUP=new vector <agenda>();
+vector <agenda> * agendaListDOWN=new vector <agenda>();
 
 vector<Color> colors1{ RED1,PINK1,PURPLE1,DEEP_PURPLE1,INDIGO1,
             BLUE1,LIGHT_BLUE1,CYAN1,TEAL1,GREEN1};
 
 vector<Color> colors2{LIGHT_GREEN1,LIME1,YELLOW1,AMBER1,
             ORANGE1,DEEP_ORANGE1,BROWN1,GREY1,WHITE1,BLACK1};
+
+
 
 Color getPixelColor(Point p) {
     Color color;
@@ -43,13 +46,18 @@ bool operator==(const Color& lhs, const Color& rhs){
 void setPixelColor(Point p, Color color) {
     glColor3f(color.r, color.g, color.b);
     glBegin(GL_POINTS);
-    glVertex2i(p.x, p.y);
+    glVertex2f(p.x, p.y);
     glEnd();
     glFlush();
 }
 
 bool onAgenda(Point p){
-    for(agenda a: agendaList){
+    for(agenda a: *agendaListUP){
+        if(p.y==a.line.y && p.x<a.line.x_right && p.x>a.line.x_left){
+            return true;
+        }
+    }
+    for(agenda a: *agendaListDOWN){
         if(p.y==a.line.y && p.x<a.line.x_right && p.x>a.line.x_left){
             return true;
         }
@@ -60,7 +68,7 @@ bool onAgenda(Point p){
 bool adjPoints_boundary(HorizontalLine line, Color color, Point * pt, Vertical_Direction dir){
 
     int y=dir==UP?line.y+1:line.y-1;
-    for(int x=line.x_left+1; x<line.x_right; x++){
+    for(GLfloat x=line.x_left+1; x<line.x_right; x++){
         Point p=Point{(GLfloat) x,(GLfloat) y};
         if((getPixelColor(p)==color)){
             if(!onAgenda(p)){
@@ -76,100 +84,116 @@ bool adjPoints_boundary(HorizontalLine line, Color color, Point * pt, Vertical_D
 void drawLine(HorizontalLine line,Color color){
     glColor3f(color.r,color.g,color.b);
     glBegin(GL_LINES);
-    glVertex2i(line.x_left+1, line.y);
-    glVertex2i(line.x_right, line.y);
+    glVertex2f(line.x_left, line.y);
+    glVertex2f(line.x_right, line.y);
     glEnd();
     glFlush();
 }
 
-HorizontalLine shadeHorizontally(Point sp,Color shadingColor){
-    
-    HorizontalLine line;
-    Color interiorColor=getPixelColor(sp);
-    Point cp;
-    cp.x=sp.x-1;
-    cp.y=sp.y;
-    line.y=sp.y;
-    while ((getPixelColor(cp)==interiorColor)){
-        //setPixelColor(cp,shadingColor);
-        cp.x--;
-    }
-    line.x_left=cp.x;
-    cp.x=sp.x;
-    while ((getPixelColor(cp)==interiorColor)){
-        //setPixelColor(cp,shadingColor);
-        cp.x++;
-    }
-    line.x_right=cp.x;
-    drawLine(line,shadingColor);
-    cout<<"shaded line "<<line.x_left+1<<' '<<line.x_right-1<<' '<<line.y<<endl;
-    return line;// line include one bndry pt in both dirs
-}
-
-void lookforTurns(HorizontalLine line,Color intColor, Vertical_Direction dir){
-    //look for s-turns y=y+1
-    cout << "look for s turns "<<line.x_left<<' '<<line.x_right<<' '<<line.y<<' '<<dir<<endl<<endl;
-    GLfloat y=line.y+1;
-    bool LINE_INPROGRESS=false;
+void lookforSTurns(HorizontalLine line,Color intColor, Vertical_Direction dir){
+    GLfloat y=dir==UP?line.y+1:line.y-1;
     HorizontalLine imgBndryLine;
     imgBndryLine.y=y;
     GLfloat x=line.x_left;
     while(x<=line.x_right){
-        cout<<"checking for x = "<<x<<" y = "<<y<<endl;
-        if(getPixelColor({x,y})==intColor&&!LINE_INPROGRESS){
-
-            cout<<"came in if "<<"x "<<x<<" y "<<y<<' '<< getPixelColor({x,y}).colorString()<<' '<<intColor.colorString() <<endl;
+        if(getPixelColor({x,y})==intColor){
             imgBndryLine.x_left=x;
-            LINE_INPROGRESS=true;
             while((getPixelColor({x,y})==intColor)){
                 x++;
             }
             imgBndryLine.x_right=x-1;
-            LINE_INPROGRESS=false;
-            cout << "agenda added "<<imgBndryLine.x_left<<' '<<imgBndryLine.x_right<<' '<<imgBndryLine.y<<' '<<dir<<endl<<endl;
-            agendaList.push_back(agenda{imgBndryLine,dir});
+            dir==UP?(agendaListUP->push_back(agenda{imgBndryLine,UP,intColor})):(agendaListDOWN->push_back(agenda{imgBndryLine,DOWN,intColor}));
         }
         else x++;
     }
-
-    //look for u turns
-
-
-
+}
+void lookforUTurns(HorizontalLine line,Color intColor, Vertical_Direction dir){
+    
+    GLfloat y=dir==DOWN?line.y+1:line.y-1;
+    HorizontalLine imgBndryLine;
+    imgBndryLine.y=y;
+    GLfloat x=line.x_left;
+    while(x<=line.x_right){
+        if(getPixelColor({x,y})==intColor){
+            imgBndryLine.x_left=x;
+            while((getPixelColor({x,y})==intColor)){
+            	cout<<"";
+                x++;
+            }
+            imgBndryLine.x_right=x-1;
+            dir==UP?(agendaListDOWN->push_back(agenda{imgBndryLine,DOWN,intColor})):(agendaListUP->push_back(agenda{imgBndryLine,UP,intColor}));
+        }
+        else x++;
+    }
 }
 
-void shade_vertically( Vertical_Direction dir, Point starting_point, Color shadingColor){
-    cout<<"shading ver from "<<starting_point.x<<' '<<starting_point.y<<endl;
-    Color origin_color=getPixelColor(starting_point);
+HorizontalLine findBndry(Point sp, Color intColor){
+	
+	HorizontalLine line;
+    Point cp=sp;
+    line.y=sp.y;
+    while ((getPixelColor(cp)==intColor)){
+    	cout<<"";
+        cp.x--;
+    }
+    line.x_left=cp.x+1;
+    cp.x=sp.x+1;
+    while ((getPixelColor(cp)==intColor)){
+    	cout<<"";
+        cp.x++;
+    }
+    line.x_right=cp.x;
+    return line;
+}
+
+HorizontalLine shadeHorizontally(Point sp,Color shadingColor,Color interiorColor){
+    
+    HorizontalLine line=findBndry(sp,interiorColor);
+    drawLine(line,shadingColor);
+    return line;
+}
+
+
+
+void shade_vertically( Vertical_Direction dir, Point starting_point, Color shadingColor,Color origin_color){
     Point st_point=starting_point;
     HorizontalLine line;
     Point* next_sp=&st_point;
     HorizontalLine prvsLine;
     int c=0;
     do{
-        line=shadeHorizontally(Point{next_sp->x,next_sp->y},shadingColor);
-        if(c)lookforTurns(prvsLine,origin_color,dir);
+        line=shadeHorizontally(Point{next_sp->x,next_sp->y},shadingColor,origin_color);
+        if(c){
+            lookforSTurns(prvsLine,origin_color,dir);
+            lookforUTurns(line,origin_color,dir);
+        }
         prvsLine=line;
         c++;
     }while(!adjPoints_boundary(line, origin_color,next_sp,dir));
-
 }
 
 void shade(Point p, Color shadingColor){
+	
+    Color intColor=getPixelColor(p);
+    
+    HorizontalLine aline= findBndry(p,intColor);
+    agendaListUP->push_back({aline,UP,intColor});
+    
+    HorizontalLine bline= findBndry({p.x,p.y-1},intColor);
+    agendaListDOWN->push_back({bline,DOWN,intColor});
+    // shade_vertically(UP,p,shadingColor,intColor);
+    // shade_vertically(DOWN,{p.x,p.y-1},shadingColor,intColor);
 
-    Vertical_Direction currentDir=UP;
-
-    shade_vertically(UP,p,shadingColor);
-    shade_vertically(DOWN,{p.x,p.y-1},shadingColor);
-
-    while(!agendaList.empty()){
-        int length=agendaList.size();
-        agenda a=agendaList.back();
-        agendaList.pop_back();
-        shade_vertically(currentDir,{a.line.x_left,a.line.y},shadingColor);
-
+    while(!(agendaListUP->empty())){
+        agenda a=agendaListUP->back();
+        agendaListUP->pop_back();
+        shade_vertically(UP,{a.line.x_left,a.line.y},shadingColor,a.originColor);
     }
-
+    while(!(agendaListDOWN->empty())){
+        agenda a=agendaListDOWN->back();
+        agendaListDOWN->pop_back();
+        shade_vertically(DOWN,{a.line.x_left,a.line.y},shadingColor,a.originColor);
+    }
 }
 
 void printTitle(string str, Color color, GLdouble width,GLdouble height){
@@ -181,7 +205,6 @@ void printTitle(string str, Color color, GLdouble width,GLdouble height){
     for (i = 0; i < len; i++) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, str.at(i));
     }
-
 }
 
 void makeColorPalette(GLdouble width,GLdouble height){
@@ -208,25 +231,24 @@ void draw_Polygon(Point p,int height, int width, Color color){
     glColor3f(color.r,color.g,color.b);
 
     glBegin(GL_LINES);
-    glVertex2i(p.x, p.y);
-    glVertex2i(p.x+width, p.y);
+    glVertex2f(p.x, p.y);
+    glVertex2f(p.x+width, p.y);
     glEnd();
 
     glBegin(GL_LINES);
-    glVertex2i(p.x+width, p.y);
-    glVertex2i(p.x+width, p.y-height);
+    glVertex2f(p.x+width, p.y);
+    glVertex2f(p.x+width, p.y-height);
     glEnd();
 
     glBegin(GL_LINES);
-    glVertex2i(p.x+width, p.y-height);
-    glVertex2i(p.x, p.y-height);
+    glVertex2f(p.x+width, p.y-height);
+    glVertex2f(p.x, p.y-height);
     glEnd();
 
     glBegin(GL_LINES);
-    glVertex2i(p.x, p.y-height);
-    glVertex2i(p.x, p.y+1);
+    glVertex2f(p.x, p.y-height);
+    glVertex2f(p.x, p.y+1);
     glEnd();
-
 }
 
 void draw_FilledPolygon(Point p,Color color){
@@ -234,13 +256,12 @@ void draw_FilledPolygon(Point p,Color color){
     glColor3f(color.r,color.g,color.b);
     glBegin(GL_POLYGON);
 
-    glVertex2i(p.x, p.y);
-    glVertex2i(p.x+50, p.y);
-    glVertex2i(p.x+50, p.y-50);
-    glVertex2i(p.x, p.y-50);
+    glVertex2f(p.x, p.y);
+    glVertex2f(p.x+50, p.y);
+    glVertex2f(p.x+50, p.y-50);
+    glVertex2f(p.x, p.y-50);
 
     glEnd();
-
 }
 
 

@@ -29,7 +29,8 @@ class agenda{
     public:
         HorizontalLine line;
         Vertical_Direction direction;
+        Color originColor;
 
-    agenda(HorizontalLine line, Vertical_Direction direction):line(line),direction(direction){};
+    agenda(HorizontalLine line, Vertical_Direction direction,Color originColor):line(line),direction(direction),originColor(originColor) {};
 };
 
