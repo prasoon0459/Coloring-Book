@@ -1,14 +1,17 @@
 #include "shade.h"
-#include "pngImage.h"
+#include "png_image.h"
 #include <string.h>
 
 bool flag=false;
-PngImage image;
+Png_Image image;
 Color shadingColor=Color{1,1,1};
 
 GLdouble width=1000,height=1000;
 GLdouble imgHt, imgWd;
 
+/**
+@brief Function to initialise the window
+*/
 void init() {
     glClearColor(1, 1, 1, 1);
     glMatrixMode(GL_PROJECTION);
@@ -28,6 +31,9 @@ void init() {
     // glOrtho(0,newwidth, 0, newheight, -1.0, 1.0);
 }*/
 
+/**
+@brief Function to draw the PNG
+*/
 void makeDrawing(){
 
     glBegin(GL_POINTS);
@@ -42,7 +48,9 @@ void makeDrawing(){
     }
     glEnd();
 }
-
+/**
+@brief Display function 
+*/
 void display(void) {
 
     glClear(GL_COLOR_BUFFER_BIT);
@@ -53,7 +61,13 @@ void display(void) {
 
     return;
 }
-
+/**
+@brief Function called when mouse buton clicked
+@param button button clicked
+@param state state of the button
+@param x x-coordi of point clicked
+@param y y-coordi of point clicked
+*/
 void onMouseClick(int button, int state, int x, int y){
     flag=!flag;                     //some weird reason.. it is getting executed twice on one click..
     if(flag){                       //probably once when u click and once when u release the mouse key..thts why this flag
@@ -61,7 +75,6 @@ void onMouseClick(int button, int state, int x, int y){
         Point p=Point{(GLfloat) x,(GLfloat)(height-y)};
         if(p.x>width-120&&p.x<width-20&&p.y>height-580&&p.y<height-80){
             shadingColor=getPixelColor(p);
-            cout<<"color chosen "<<shadingColor.colorString()<<endl;
         }
         else if(p.x<width-140||p.y<height-600){
             if(shadingColor==getPixelColor(p)){
@@ -76,6 +89,12 @@ void onMouseClick(int button, int state, int x, int y){
     }
 }
 
+/**
+@brief main Function
+@param argc
+@param argv
+*/
+
 int main(int argc, char** argv){
 
     string str ;
@@ -83,12 +102,9 @@ int main(int argc, char** argv){
     cin>>str;
     char * ptr=new char[str.length()+1];
     strcpy(ptr,str.c_str());
-    image.loadImage(ptr);
+    image.load(ptr);
     imgHt=image.getHeight();
     imgWd=image.getWidth();
-
-    // cout<<"img w "<<imgWd<<endl;
-    // cout<<"img h "<<imgHt<<endl;
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);

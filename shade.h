@@ -1,5 +1,6 @@
 #include "agenda.h"
 
+
 void setPixelColor(Point p, Color color);
 Color getPixelColor(Point p);
 bool operator==(const Color& lhs, const Color& rhs);

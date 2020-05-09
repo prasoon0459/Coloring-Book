@@ -3,26 +3,25 @@
 using namespace std;
 #include<vector>
 
+/* @brief holds all necessary information about a shading agenda*/
+
 enum Vertical_Direction{UP,DOWN};
 
 struct Point {
-    GLfloat x;
-    GLfloat y;
+    GLfloat x;//x-coord
+    GLfloat y;//y-coord
 };
 
 struct Color {
-    GLfloat r;
-    GLfloat g;
-    GLfloat b;
-    string colorString(){
-        return to_string(r)+" "+to_string(g)+" "+to_string(b);
-    }
+    GLfloat r;//red
+    GLfloat g;//green
+    GLfloat b;//blue
 };
 
 struct HorizontalLine{
-    GLfloat x_left;
-    GLfloat x_right;
-    GLfloat y;
+    GLfloat x_left;//left boundary
+    GLfloat x_right;//right boundary
+    GLfloat y;//veriacl level
 };
 
 class agenda{
@@ -31,6 +30,6 @@ class agenda{
         Vertical_Direction direction;
         Color originColor;
 
-    agenda(HorizontalLine line, Vertical_Direction direction,Color originColor):line(line),direction(direction),originColor(originColor) {};
+    agenda(HorizontalLine line, Vertical_Direction direction,Color originColor)
+                :line(line),direction(direction),originColor(originColor) {};
 };
-
