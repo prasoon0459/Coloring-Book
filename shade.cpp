@@ -143,12 +143,16 @@ void lookforSTurns(HorizontalLine line,Color intColor, Vertical_Direction dir){
         if(getPixelColor({x,y})==intColor){
             imgBndryLine.x_left=x;
             while((getPixelColor({x,y})==intColor)){
+		cout<<"";
                 x++;
             }
             imgBndryLine.x_right=x-1;
             dir==UP?(agendaListUP->push_back(agenda{imgBndryLine,UP,intColor})):(agendaListDOWN->push_back(agenda{imgBndryLine,DOWN,intColor}));
         }
-        else x++;
+        else{
+	    cout<<"";
+	    x++;
+	}
     }
 }
 
