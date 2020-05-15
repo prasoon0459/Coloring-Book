@@ -128,12 +128,12 @@ About uivector, ucvector and string:
 */
 
 #ifdef LODEPNG_COMPILE_ZLIB
-/*dynamic vector of unsigned ints*/
+/**dynamic vector of unsigned ints*/
 typedef struct uivector
 {
   unsigned* data;
-  size_t size; /*size in number of unsigned longs*/
-  size_t allocsize; /*allocated size in bytes*/
+  size_t size; /* @brief size in number of unsigned longs*/
+  size_t allocsize; /* @brief allocated size in bytes*/
 } uivector;
 
 static void uivector_cleanup(void* p)
@@ -143,7 +143,11 @@ static void uivector_cleanup(void* p)
   ((uivector*)p)->data = NULL;
 }
 
-/*returns 1 if success, 0 if failure ==> nothing done*/
+/*/**
+@brief returns 1 if success, 0 if failure ==> nothing done
+@param p is pointer
+@param size
+*/*/
 static unsigned uivector_resize(uivector* p, size_t size)
 {
   if(size * sizeof(unsigned) > p->allocsize)
@@ -162,7 +166,10 @@ static unsigned uivector_resize(uivector* p, size_t size)
   return 1;
 }
 
-/*resize and give all new elements the value*/
+/** @brief function to resize and give all new elements the value
+@param p
+@param size
+@param value*/
 static unsigned uivector_resizev(uivector* p, size_t size, unsigned value)
 {
   size_t oldsize = p->size, i;
@@ -170,7 +177,7 @@ static unsigned uivector_resizev(uivector* p, size_t size, unsigned value)
   for(i = oldsize; i < size; i++) p->data[i] = value;
   return 1;
 }
-
+/** @brief for initialisation */
 static void uivector_init(uivector* p)
 {
   p->data = NULL;
@@ -178,7 +185,7 @@ static void uivector_init(uivector* p)
 }
 
 #ifdef LODEPNG_COMPILE_ENCODER
-/*returns 1 if success, 0 if failure ==> nothing done*/
+/** @brief returns 1 if success, 0 if failure ==> nothing done*/
 static unsigned uivector_push_back(uivector* p, unsigned c)
 {
   if(!uivector_resize(p, p->size + 1)) return 0;
@@ -186,7 +193,9 @@ static unsigned uivector_push_back(uivector* p, unsigned c)
   return 1;
 }
 
-/*copy q to p, returns 1 if success, 0 if failure ==> nothing done*/
+/** @brief copy q to p, returns 1 if success, 0 if failure ==> nothing done
+@param pointer p
+@param costant pointer q*/
 static unsigned uivector_copy(uivector* p, const uivector* q)
 {
   size_t i;
@@ -207,7 +216,7 @@ typedef struct ucvector
   size_t allocsize; /*allocated size*/
 } ucvector;
 
-/*returns 1 if success, 0 if failure ==> nothing done*/
+/**@brief  returns 1 if success, 0 if failure ==> nothing done*/
 static unsigned ucvector_resize(ucvector* p, size_t size)
 {
   if(size * sizeof(unsigned char) > p->allocsize)
@@ -242,7 +251,7 @@ static void ucvector_init(ucvector* p)
 }
 
 #ifdef LODEPNG_COMPILE_DECODER
-/*resize and give all new elements the value*/
+/**@brief resize and give all new elements the value*/
 static unsigned ucvector_resizev(ucvector* p, size_t size, unsigned char value)
 {
   size_t oldsize = p->size, i;
@@ -254,7 +263,7 @@ static unsigned ucvector_resizev(ucvector* p, size_t size, unsigned char value)
 #endif /*LODEPNG_COMPILE_PNG*/
 
 #ifdef LODEPNG_COMPILE_ZLIB
-/*you can both convert from vector to buffer&size and vica versa. If you use
+/** @brief you can both convert from vector to buffer&size and vica versa. If you use
 init_buffer to take over a buffer and size, it is not needed to use cleanup*/
 static void ucvector_init_buffer(ucvector* p, unsigned char* buffer, size_t size)
 {
@@ -264,7 +273,7 @@ static void ucvector_init_buffer(ucvector* p, unsigned char* buffer, size_t size
 #endif /*LODEPNG_COMPILE_ZLIB*/
 
 #if (defined(LODEPNG_COMPILE_PNG) && defined(LODEPNG_COMPILE_ANCILLARY_CHUNKS)) || defined(LODEPNG_COMPILE_ENCODER)
-/*returns 1 if success, 0 if failure ==> nothing done*/
+/** @brief returns 1 if success, 0 if failure ==> nothing done*/
 static unsigned ucvector_push_back(ucvector* p, unsigned char c)
 {
   if(!ucvector_resize(p, p->size + 1)) return 0;
@@ -278,7 +287,7 @@ static unsigned ucvector_push_back(ucvector* p, unsigned char c)
 
 #ifdef LODEPNG_COMPILE_PNG
 #ifdef LODEPNG_COMPILE_ANCILLARY_CHUNKS
-/*returns 1 if success, 0 if failure ==> nothing done*/
+/** @brief returns 1 if success, 0 if failure ==> nothing done*/
 static unsigned string_resize(char** out, size_t size)
 {
   char* data = (char*)lodepng_realloc(*out, size + 1);
@@ -290,7 +299,7 @@ static unsigned string_resize(char** out, size_t size)
   return data != 0;
 }
 
-/*init a {char*, size_t} pair for use as string*/
+/** @brief init a {char*, size_t} pair for use as string*/
 static void string_init(char** out)
 {
   *out = NULL;
