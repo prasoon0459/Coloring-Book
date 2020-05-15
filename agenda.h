@@ -8,20 +8,20 @@ using namespace std;
 enum Vertical_Direction{UP,DOWN};
 
 struct Point {
-    GLfloat x;//x-coord
-    GLfloat y;//y-coord
+    GLfloat x;/**< x coordinate */
+    GLfloat y;/**< y coordinate */
 };
 
 struct Color {
-    GLfloat r;//red
-    GLfloat g;//green
-    GLfloat b;//blue
+    GLfloat r;/**< red */
+    GLfloat g;/**< green*/
+    GLfloat b;/**< blue */
 };
 
 struct HorizontalLine{
-    GLfloat x_left;//left boundary
-    GLfloat x_right;//right boundary
-    GLfloat y;//veriacl level
+    GLfloat x_left;/**left boundary*/
+    GLfloat x_right;/**< right boundary  */
+    GLfloat y;/**< vriacl level*/
 };
 
 class agenda{
