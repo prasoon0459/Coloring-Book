@@ -98,7 +98,7 @@ void onMouseClick(int button, int state, int x, int y){
 int main(int argc, char** argv){
 
     string str ;
-    cout<<"Please ener path to the PNG file :"<<endl;
+    cout<<"Please enter path to the PNG file :"<<endl;
     cin>>str;
     char * ptr=new char[str.length()+1];
     strcpy(ptr,str.c_str());
@@ -110,7 +110,7 @@ int main(int argc, char** argv){
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
     glutInitWindowSize(width , height);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("Open GL");
+    glutCreateWindow("Coloring Book");
     init();
     //glutReshapeFunc(resize);
     glutDisplayFunc(display);
