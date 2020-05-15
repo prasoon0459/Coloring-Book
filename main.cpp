@@ -19,7 +19,7 @@ void init() {
     glOrtho(0,width, 0, height, -1.0, 1.0);
 }
 
-/*void resize(int newheight, int newwidth) {
+/** void resize(int newheight, int newwidth) {
 
     width=newwidth;
     height=newheight;
