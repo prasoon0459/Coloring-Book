@@ -1,3 +1,8 @@
+/**
+ * \file LodePNG Library
+ */
+
+
 /*
 LodePNG version 20131222
 

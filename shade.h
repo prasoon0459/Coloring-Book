@@ -1,5 +1,9 @@
-#include "agenda.h"
+/**
+ * \file all function prototypes of all functions used in shade.cpp
+ */
 
+
+#include "agenda.h"
 
 void setPixelColor(Point p, Color color);
 Color getPixelColor(Point p);

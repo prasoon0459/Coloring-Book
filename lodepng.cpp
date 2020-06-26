@@ -1,3 +1,7 @@
+/**
+ * @file LodePNG library for handling image files.
+ */
+
 /*
 LodePNG version 20131222
 

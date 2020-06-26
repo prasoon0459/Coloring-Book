@@ -1,28 +1,31 @@
 #include <iostream>
 #include "png_image.h"
 using namespace std;
+
 /**
-@brief constructor
-*/
+ * @brief constructor for an emoty Png_Image
+ */
 Png_Image::Png_Image(){
 	w = 0;
 	h = 0;
 }
+
 /**
-@brief destructor
-*/
+ * @brief destructor
+ */
 Png_Image::~Png_Image(){}
+
 /** @brief constructor
-@param character pointer
-*/
+ *  @param character pointer
+ */
 Png_Image::Png_Image(char *path){
 	if (path[0] != '\0')
 		load(path);
 }
-/**
 
-@param character pointer
-*/
+/**
+ * @param character pointer
+ */
 void Png_Image::load(char *path){
 	vector<unsigned char> pngTemp;
 	lodepng::load_file(pngTemp, path);
@@ -33,26 +36,29 @@ void Png_Image::load(char *path){
 		exit(0);
 	}
 }
+
 /**
-@brief Function to return width as an integer
-*/
+ * @brief Function to return width as an integer
+ */
 int Png_Image::getWidth(){
 	 return w;
 }
+
 /**
-@brief Function to get height as an integer
-*/
+ * @brief Function to get height as an integer
+ */
 int Png_Image::getHeight(){
 	 return h;
 }
+
 /**
-@brief Function to get colour
-@param x which is x coordinate
-@param y which is y coordinate
-@param r which is red
-@param g which is green
-@param b which is blue
-*/
+ * @brief Function to get colour
+ * @param x which is x coordinate
+ * @param y which is y coordinate
+ * @param r which is red
+ * @param g which is green
+ * @param b which is blue
+ */
 void Png_Image::getRGB(int x, int y, int &r, int &g, int &b)
  {
 	if (x < 0 || y < 0 || x > w || y > h)
@@ -68,4 +74,3 @@ void Png_Image::getRGB(int x, int y, int &r, int &g, int &b)
 		b = img[4 * y*w + 4 * x + 2];
 	}
  }
-

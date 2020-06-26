@@ -1,3 +1,16 @@
+/**
+ * \file Driver code for running the application.
+ */
+
+/*! \mainpage Colouring Book
+ *
+ * \section Introduction
+ * 
+ * This project was made by a group of three members: Rohit Dwivedula, Prasoon Baghel and SHreya Manish Jambavalikar
+ * as partial credit towards the course Computer Graphics (IS F311). The instructions for running the code can be 
+ * found in the README file in the directory along with an explanation of the algorithm. 
+ */
+
 #include "shade.h"
 #include "png_image.h"
 #include <string.h>
@@ -10,8 +23,8 @@ GLdouble width=1000,height=1000;
 GLdouble imgHt, imgWd;
 
 /**
-@brief Function to initialise the window
-*/
+ * @brief Function to initialise the window
+ */
 void init() {
     glClearColor(1, 1, 1, 1);
     glMatrixMode(GL_PROJECTION);
@@ -19,7 +32,8 @@ void init() {
     glOrtho(0,width, 0, height, -1.0, 1.0);
 }
 
-/** void resize(int newheight, int newwidth) {
+/** 
+void resize(int newheight, int newwidth) {
 
     width=newwidth;
     height=newheight;
@@ -29,11 +43,12 @@ void init() {
     // glMatrixMode(GL_PROJECTION);
     // glLoadIdentity();
     // glOrtho(0,newwidth, 0, newheight, -1.0, 1.0);
-}*/
+}
+*/
 
 /**
-@brief Function to draw the PNG
-*/
+ * @brief Function to draw the PNG
+ */
 void makeDrawing(){
 
     glBegin(GL_POINTS);
@@ -48,8 +63,9 @@ void makeDrawing(){
     }
     glEnd();
 }
+
 /**
-@brief Display function 
+ * @brief Display function 
 */
 void display(void) {
 
@@ -61,13 +77,14 @@ void display(void) {
 
     return;
 }
+
 /**
-@brief Function called when mouse buton clicked
-@param button button clicked
-@param state state of the button
-@param x x-coordi of point clicked
-@param y y-coordi of point clicked
-*/
+ * @brief Function called when mouse buton clicked
+ * @param button button clicked
+ * @param state state of the button
+ * @param x x-coordi of point clicked
+ * @param y y-coordi of point clicked
+ */
 void onMouseClick(int button, int state, int x, int y){
     flag=!flag;                     //some weird reason.. it is getting executed twice on one click..
     if(flag){                       //probably once when u click and once when u release the mouse key..thts why this flag
@@ -90,11 +107,10 @@ void onMouseClick(int button, int state, int x, int y){
 }
 
 /**
-@brief main Function
-@param argc
-@param argv
-*/
-
+ * @brief main function - driver code for the program
+ * @param argc number of arguments
+ * @param argv array of pointers to strings
+ */
 int main(int argc, char** argv){
 
     string str ;
@@ -110,12 +126,11 @@ int main(int argc, char** argv){
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
     glutInitWindowSize(width , height);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("Coloring Book");
+    glutCreateWindow("ISF311 - Coloring Book");
     init();
     //glutReshapeFunc(resize);
     glutDisplayFunc(display);
     glutMouseFunc(onMouseClick);
     glutMainLoop();
     return 0;
-
 }

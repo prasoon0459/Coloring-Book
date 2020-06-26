@@ -1,3 +1,7 @@
+/**
+ * \file function prototypes of all functions used in png_image.cpp
+ */
+
 #include <vector>
 #include "lodepng.h"
 using namespace std;
